@@ -9,11 +9,11 @@ echo "=========================================="
 echo "DeepSeek-R1 vLLM H20*8 服务器安装脚本"
 echo "=========================================="
 
-# 检查是否为root用户
-if [[ $EUID -eq 0 ]]; then
-   echo "请不要使用root用户运行此脚本"
-   exit 1
-fi
+# # 检查是否为root用户
+# if [[ $EUID -eq 0 ]]; then
+#    echo "请不要使用root用户运行此脚本"
+#    exit 1
+# fi
 
 # 检查CUDA版本
 echo "检查CUDA环境..."
