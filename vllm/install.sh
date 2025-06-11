@@ -93,8 +93,8 @@ echo "安装项目依赖..."
 pip install -r requirements.txt
 
 # 安装Flash Attention 2 (可选，性能优化)
-echo "安装Flash Attention 2..."
-pip install flash-attn --no-build-isolation
+# echo "安装Flash Attention 2..."
+# pip install flash-attn --no-build-isolation
 
 # 创建模型缓存目录
 echo "创建模型缓存目录..."
