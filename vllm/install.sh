@@ -123,6 +123,9 @@ if [[ $download_model == "y" || $download_model == "Y" ]]; then
     export TRANSFORMERS_CACHE=$(pwd)/model_cache
     export HF_HOME=$(pwd)/model_cache
     export HF_HUB_ENABLE_HF_TRANSFER=1
+    # 确保使用在线模式
+    export TRANSFORMERS_OFFLINE=0
+    unset HF_HUB_OFFLINE
     
     python -c "
 from transformers import AutoTokenizer, AutoModelForCausalLM
