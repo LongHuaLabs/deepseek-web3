@@ -27,7 +27,7 @@ plotly>=5.17.0
 
 # 性能优化
 ninja>=1.11.1
-flash-attn>=2.4.0
+# flash-attn>=2.4.0
 
 # 数据处理和分析
 aiofiles>=23.2.1
