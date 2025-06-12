@@ -199,13 +199,48 @@ def format_chat_prompt(messages: List[ChatMessage]) -> str:
     prompt += "<|im_start|>assistant\n"
     return prompt
 
+async def generate_with_vllm_stream(
+    prompt: str,
+    max_tokens: int,
+    temperature: float,
+    top_p: float = 0.9,
+    frequency_penalty: float = 0.0
+):
+    """使用vLLM生成流式响应"""
+    if not vllm_engine:
+        raise HTTPException(status_code=503, detail="vLLM引擎未初始化")
+    
+    try:
+        # 配置采样参数
+        sampling_params = SamplingParams(
+            temperature=temperature,
+            top_p=top_p,
+            max_tokens=max_tokens,
+            repetition_penalty=1.0 + frequency_penalty,
+            use_beam_search=False,
+            skip_special_tokens=True,
+        )
+        
+        # 生成请求ID
+        request_id = str(uuid.uuid4())
+        
+        # 流式生成
+        result_generator = vllm_engine.generate(prompt, sampling_params, request_id)
+        
+        async for request_output in result_generator:
+            if request_output.outputs:
+                yield request_output.outputs[0].text
+    
+    except Exception as e:
+        logger.error(f"vLLM流式生成失败: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"生成失败: {str(e)}")
+
 async def generate_with_vllm(
     prompt: str,
     max_tokens: int,
     temperature: float,
     top_p: float = 0.9,
-    frequency_penalty: float = 0.0,
-    stream: bool = False
+    frequency_penalty: float = 0.0
 ) -> str:
     """使用vLLM生成响应"""
     if not vllm_engine:
@@ -227,31 +262,23 @@ async def generate_with_vllm(
         
         start_time = time.time()
         
-        if stream:
-            # 流式生成
-            result_generator = vllm_engine.generate(prompt, sampling_params, request_id)
+        # 非流式生成
+        result_generator = vllm_engine.generate(prompt, sampling_params, request_id)
+        
+        final_output = None
+        async for request_output in result_generator:
+            final_output = request_output
+        
+        if final_output and final_output.outputs:
+            response = final_output.outputs[0].text
+            generation_time = time.time() - start_time
             
-            async for request_output in result_generator:
-                if request_output.outputs:
-                    yield request_output.outputs[0].text
+            logger.info(f"生成完成，耗时: {generation_time:.2f}秒")
+            logger.info(f"输入tokens: {len(prompt.split())}, 输出tokens: {len(response.split())}")
+            
+            return response.strip()
         else:
-            # 非流式生成
-            result_generator = vllm_engine.generate(prompt, sampling_params, request_id)
-            
-            final_output = None
-            async for request_output in result_generator:
-                final_output = request_output
-            
-            if final_output and final_output.outputs:
-                response = final_output.outputs[0].text
-                generation_time = time.time() - start_time
-                
-                logger.info(f"生成完成，耗时: {generation_time:.2f}秒")
-                logger.info(f"输入tokens: {len(prompt.split())}, 输出tokens: {len(response.split())}")
-                
-                return response.strip()
-            else:
-                raise HTTPException(status_code=500, detail="生成失败：无输出")
+            raise HTTPException(status_code=500, detail="生成失败：无输出")
     
     except Exception as e:
         logger.error(f"vLLM生成失败: {str(e)}")
@@ -267,13 +294,12 @@ async def chat(request: ChatRequest):
         from fastapi.responses import StreamingResponse
         
         async def generate_stream():
-            async for chunk in generate_with_vllm(
+            async for chunk in generate_with_vllm_stream(
                 prompt, 
                 request.max_tokens, 
                 request.temperature, 
                 request.top_p, 
-                request.frequency_penalty,
-                stream=True
+                request.frequency_penalty
             ):
                 yield f"data: {json.dumps({'content': chunk})}\n\n"
             yield "data: [DONE]\n\n"
