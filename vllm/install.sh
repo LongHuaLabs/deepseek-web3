@@ -126,6 +126,8 @@ if [[ $download_model == "y" || $download_model == "Y" ]]; then
     # 确保使用在线模式
     export TRANSFORMERS_OFFLINE=0
     unset HF_HUB_OFFLINE
+    # 使用镜像
+    export HF_ENDPOINT=https://hf-mirror.com
     
     python -c "
 from transformers import AutoTokenizer, AutoModelForCausalLM

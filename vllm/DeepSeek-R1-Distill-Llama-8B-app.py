@@ -4,6 +4,10 @@
 优化支持H20*8服务器配置
 """
 
+import os
+# 设置HF镜像站，解决国内网络访问问题
+os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
+
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
