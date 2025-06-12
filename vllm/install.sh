@@ -54,14 +54,15 @@ sudo apt install -y \
     tmux \
     screen
 
-# 创建Python虚拟环境
-echo "创建Python虚拟环境..."
-if [ ! -d "venv" ]; then
-    python3.10 -m venv venv
+# 创建虚拟环境（可选）
+read -p "是否创建虚拟环境？(y/n): " create_venv
+if [[ $create_venv == "y" || $create_venv == "Y" ]]; then
+    echo "📦 创建虚拟环境..."
+    python3 -m venv deepseek_env
+    source deepseek_env/bin/activate
+    echo "✅ 虚拟环境已创建并激活"
+    echo "💡 下次使用前请运行: source deepseek_env/bin/activate"
 fi
-
-# 激活虚拟环境
-source venv/bin/activate
 
 # 升级pip
 echo "升级pip..."
@@ -110,6 +111,7 @@ export TRANSFORMERS_CACHE=$(pwd)/model_cache
 export HF_HOME=$(pwd)/model_cache
 export HF_HUB_ENABLE_HF_TRANSFER=1
 export VLLM_USE_MODELSCOPE=false
+export HF_ENDPOINT=https://hf-mirror.com
 EOF
 
 # 重新加载环境变量
