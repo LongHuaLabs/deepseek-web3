@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # 激活虚拟环境
-source venv/bin/activate
+# source venv/bin/activate
+# coda activate deepseek_env
 
 # 设置环境变量
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7

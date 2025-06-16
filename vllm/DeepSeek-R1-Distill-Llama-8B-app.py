@@ -87,12 +87,15 @@ async def get_gpu_info():
         gpus = GPUtil.getGPUs()
         gpu_info = []
         for gpu in gpus:
+           # 计算显存使用百分比
+            memory_percent = (gpu.memoryUsed / gpu.memoryTotal) * 100 if gpu.memoryTotal > 0 else 0
+            
             gpu_info.append({
                 "id": gpu.id,
                 "name": gpu.name,
                 "memory_used": f"{gpu.memoryUsed}MB",
                 "memory_total": f"{gpu.memoryTotal}MB",
-                "memory_percent": f"{gpu.memoryPercent:.1f}%",
+                "memory_percent": f"{memory_percent:.1f}%",
                 "temperature": f"{gpu.temperature}°C",
                 "load": f"{gpu.load * 100:.1f}%"
             })
