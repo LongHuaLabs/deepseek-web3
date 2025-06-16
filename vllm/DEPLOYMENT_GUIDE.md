@@ -1,5 +1,20 @@
 # DeepSeek-R1-Distill-Llama-8B H20*8 服务器部署指南
 
+```bash
+cd /project/deepseek-web3/
+
+conda activate deepseek_env
+
+cd vllm
+
+#启动服务
+./start_server.sh
+
+# 测试
+python test_api.py
+```
+
+
 ## 🖥️ 服务器环境
 - **GPU**: 8 × NVIDIA H20 (每块 ~95GB 显存)
 - **CUDA**: 12.4
