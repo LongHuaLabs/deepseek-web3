@@ -262,7 +262,7 @@ async def generate_with_vllm(
             top_p=top_p,
             max_tokens=max_tokens,
             repetition_penalty=1.0 + frequency_penalty,
-            use_beam_search=False,
+            # use_beam_search=False,
             skip_special_tokens=True,
         )
         
