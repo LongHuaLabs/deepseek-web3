@@ -65,7 +65,9 @@ class StreamingResponse(BaseModel):
 class VLLMConfig:
     """vLLM配置类，针对H20*8优化"""
     def __init__(self):
-        self.model_name = "deepseek-ai/DeepSeek-R1-Distill-Llama-8B"  # 使用8B模型更稳定
+        # self.model_name = "deepseek-ai/DeepSeek-R1-Distill-Llama-8B"  # 使用8B模型更稳定
+        # 使用本地模型
+        self.model_name = "/root/models/deepseek-ai/DeepSeek-R1-Distill-Llama-8B" 
         self.tensor_parallel_size = 8  # 使用全部8张H20
         self.gpu_memory_utilization = 0.85  # H20显存利用率
         self.max_model_len = 32768  # 支持长上下文
