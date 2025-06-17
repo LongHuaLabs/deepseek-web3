@@ -580,7 +580,7 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", default="0.0.0.0", help="服务器地址")
-    parser.add_argument("--port", type=int, default=8000, help="端口号")
+    parser.add_argument("--port", type=int, default=8822, help="端口号")
     parser.add_argument("--workers", type=int, default=1, help="工作进程数")
     parser.add_argument("--log-level", default="info", help="日志级别")
     parser.add_argument("--model-name", default="deepseek-ai/DeepSeek-R1-Distill-Llama-8B", help="模型名称")
