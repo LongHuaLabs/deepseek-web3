@@ -16,7 +16,7 @@ echo "检查GPU状态..."
 nvidia-smi
 
 # 后台启动DeepSeek-R1 vLLM服务器
-nohup python DeepSeek-R1-Distill-Llama-8B-app.py --host 0.0.0.0 --port 8822 > server_output.log 2>&1 &
+nohup python DeepSeek-R1-Distill-Llama-8B-app.py --host 0.0.0.0 --port 8822 > output.log 2>&1 &
 echo $! > server.pid
 
 echo "DeepSeek-R1 vLLM服务器已经在后台启动。"
